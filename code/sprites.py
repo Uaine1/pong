@@ -1,33 +1,49 @@
 from settings import *
 from random import choice, uniform
 
-
-class Player(pygame.sprite.Sprite):
+class Paddle(pygame.sprite.Sprite):
     def __init__(self, groups):
         super().__init__(groups)
         self.image = pygame.Surface(SIZE["paddle"], pygame.SRCALPHA)
         pygame.draw.rect(self.image, COLORS["paddle"], pygame.FRect((0,0), SIZE["paddle"]), 0, 10)
-        self.rect = self.image.get_frect(center = POS["player"])
-        self.speed = SPEED["player"]
+        self.rect = self.image.get_frect(center = POS["player"])  
         self.old_rect = self.rect.copy()
         self.direction = 0
-        
-        
+    
+    
     def move(self, dt):
         self.rect.centery += self.direction * self.speed * dt
         self.rect.top = 0 if self.rect.top < 0 else self.rect.top
         self.rect.bottom = WINDOW_HEIGHT if self.rect.bottom > WINDOW_HEIGHT else self.rect.bottom
+        
+        
+    def update(self, dt):
+        self.old_rect = self.rect.copy()
+        self.move(dt)
+        self.get_direction()
 
-    
+
+class Player(Paddle):
+    def __init__(self, groups):
+        super().__init__(groups)
+        self.speed = SPEED["player"]
+        
+
     def get_direction(self):
         keys = pygame.key.get_pressed()
         self.direction = int(keys[pygame.K_DOWN] or keys[pygame.K_s]) - int(keys[pygame.K_UP] or keys[pygame.K_w])
     
     
-    def update(self, dt):
-        self.old_rect = self.rect.copy()
-        self.move(dt)
-        self.get_direction()
+class Opponent(Paddle):
+    def __init__(self, groups, ball):
+        super().__init__(groups)
+        self.speed = SPEED["opponent"]
+        self.rect.center = POS["opponent"]
+        self.ball = ball
+        
+        
+    def get_direction(self):
+        self.direction = 1 if self.ball.rect.centery > self.rect.centery else -1
         
         
 class Ball(pygame.sprite.Sprite):
