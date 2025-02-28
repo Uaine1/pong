@@ -7,7 +7,9 @@ Pong
 Pong 
 
 ## Covered Topics
-- 
+- Collision between moving objects
+- Inheritance
+- Saving and loading of data in a file
 
 ## Tutorial Used
 Here's the link for the youtube video that i used to practice and all assets used belongs to Clear Code:<br>
